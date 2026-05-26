@@ -5,7 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { LayoutDashboard, Users, FileText, Settings, Bell, Search, Menu, Database } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, Menu, Database } from 'lucide-react';
 import AdminManagement from './AdminManagement';
 import ReportsView from './ReportsView';
 import DataManagementView from './DataManagementView';
@@ -26,6 +26,7 @@ const GRADIENTS = [
 // Main Layout Component
 export default function Dashboard({ currentUser, onLogout, onUpdateUser }) {
   const [activeView, setActiveView] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,34 +83,45 @@ export default function Dashboard({ currentUser, onLogout, onUpdateUser }) {
   const rowCount = displayData.length;
   const colCount = displayHeaders.length;
 
+  const handleNavClick = (view) => {
+    setActiveView(view);
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="dashboard-layout">
+      {/* Mobile overlay — closes sidebar when tapped */}
+      <div
+        className={`sidebar-overlay${sidebarOpen ? ' mobile-open' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
       {/* Sidebar */}
-      <aside className="sidebar">
+      <aside className={`sidebar${sidebarOpen ? ' mobile-open' : ''}`}>
         <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem' }}>
           <img src="/name.png" alt="CARBURE" style={{ height: '48px', objectFit: 'contain', marginTop: '4px' }} />
         </div>
         <nav className="nav-links">
-          <div className={`nav-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
+          <div className={`nav-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => handleNavClick('dashboard')}>
             <LayoutDashboard size={20} />
             <span>Dashboard</span>
           </div>
           {canViewAdmins && (
-            <div className={`nav-item ${activeView === 'users' ? 'active' : ''}`} onClick={() => setActiveView('users')}>
+            <div className={`nav-item ${activeView === 'users' ? 'active' : ''}`} onClick={() => handleNavClick('users')}>
               <Users size={20} />
               <span>Employees</span>
             </div>
           )}
-          <div className={`nav-item ${activeView === 'reports' ? 'active' : ''}`} onClick={() => setActiveView('reports')}>
+          <div className={`nav-item ${activeView === 'reports' ? 'active' : ''}`} onClick={() => handleNavClick('reports')}>
             <FileText size={20} />
             <span>PDF Reports</span>
           </div>
-          <div className={`nav-item ${activeView === 'data' ? 'active' : ''}`} onClick={() => setActiveView('data')}>
+          <div className={`nav-item ${activeView === 'data' ? 'active' : ''}`} onClick={() => handleNavClick('data')}>
             <Database size={20} />
             <span>Data</span>
           </div>
           {canViewAdmins && (
-            <div className={`nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => setActiveView('settings')} style={{ marginTop: 'auto' }}>
+            <div className={`nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => handleNavClick('settings')} style={{ marginTop: 'auto' }}>
               <Settings size={20} />
               <span>Settings</span>
             </div>
@@ -124,9 +136,14 @@ export default function Dashboard({ currentUser, onLogout, onUpdateUser }) {
       {/* Main Content */}
       <main className="main-content">
         <header className="header">
-          <div className="header-title">Admin Overview</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button className="mobile-menu-btn" onClick={() => setSidebarOpen(prev => !prev)} aria-label="Toggle menu">
+              <Menu size={22} />
+            </button>
+            <div className="header-title">Admin Overview</div>
+          </div>
           <div className="header-actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--card-bg)', padding: '0.25rem 0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border-color)' }}>
+            <div className="header-user-email" style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--card-bg)', padding: '0.25rem 0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border-color)' }}>
               <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Logged in as <strong style={{ color: 'var(--foreground)' }}>{currentUser?.Email}</strong></span>
             </div>
           </div>

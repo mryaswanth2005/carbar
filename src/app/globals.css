@@ -536,3 +536,211 @@ a {
   background: #f1f5f9;
   color: var(--foreground);
 }
+
+/* ============================================
+   RESPONSIVE / MOBILE STYLES
+   ============================================ */
+
+/* Hamburger menu button — hidden on desktop */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 200;
+}
+
+.mobile-menu-btn:hover {
+  background: var(--hover-bg);
+  color: var(--accent);
+}
+
+/* Mobile sidebar overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 149;
+}
+
+/* Tablet: shrink sidebar to icon-only */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 72px;
+    padding: 1.5rem 0.5rem;
+    overflow: hidden;
+  }
+
+  .sidebar .brand span,
+  .sidebar .nav-item span {
+    display: none;
+  }
+
+  .sidebar .brand {
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .sidebar .nav-item {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  .page-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .header {
+    padding: 0 1.25rem;
+  }
+}
+
+/* Mobile: slide-in sidebar */
+@media (max-width: 640px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  /* Hide sidebar by default on mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 150;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding: 2rem 1rem;
+  }
+
+  /* Show text labels again on mobile sidebar */
+  .sidebar .brand span,
+  .sidebar .nav-item span {
+    display: inline;
+  }
+
+  .sidebar .brand {
+    justify-content: flex-start;
+    padding: 0 1rem;
+  }
+
+  .sidebar .nav-item {
+    justify-content: flex-start;
+    padding: 0.75rem 1rem;
+  }
+
+  /* When sidebar is open */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay.mobile-open {
+    display: block;
+  }
+
+  /* Main content takes full width */
+  .main-content {
+    width: 100%;
+  }
+
+  /* Header adjustments */
+  .header {
+    padding: 0 1rem;
+    height: 60px;
+    gap: 0.5rem;
+  }
+
+  .header-title {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  /* Hide the "Logged in as" text on very small screens */
+  .header-user-email {
+    display: none;
+  }
+
+  /* Page content */
+  .page-content {
+    padding: 1rem 0.75rem;
+  }
+
+  /* KPI grid — single column on mobile */
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Charts — single column on mobile */
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .chart-card {
+    min-height: 300px;
+  }
+
+  /* Admin table header — stack vertically */
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* Modals — full screen on mobile */
+  .modal-content {
+    max-width: 100% !important;
+    max-height: 95vh !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    padding: 1.25rem !important;
+    margin: auto 0 0 0;
+  }
+
+  .modal-overlay {
+    align-items: flex-end;
+  }
+
+  /* Form rows — stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .permissions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Data management toolbar — stack */
+  .admin-header > div:last-child {
+    flex-direction: column;
+    align-items: stretch !important;
+    width: 100%;
+  }
+
+  .admin-header > div:last-child > div,
+  .admin-header > div:last-child > button {
+    width: 100%;
+  }
+
+  /* Search input full width */
+  .admin-header input[type="text"] {
+    width: 100% !important;
+  }
+}
