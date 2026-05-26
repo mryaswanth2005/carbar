@@ -1,26 +1,26 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Dashboard from '@/components/Dashboard';
-import UserLogin from '@/components/UserLogin';
+import AdminLogin from '@/components/AdminLogin';
 
-export default function UserPortal() {
+export default function AdminPortal() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Completely separate key — admin sessions never bleed in here
-    const savedUser = localStorage.getItem('carbure_user');
-    if (savedUser) {
+    // Separate key — completely isolated from the user portal
+    const savedAdmin = localStorage.getItem('carbure_admin_user');
+    if (savedAdmin) {
       try {
-        const parsed = JSON.parse(savedUser);
-        // Extra guard: if somehow an admin session ended up here, clear it
-        if (parsed?.Role?.toLowerCase() === 'admin') {
-          localStorage.removeItem('carbure_user');
+        const parsed = JSON.parse(savedAdmin);
+        // Guard: only allow actual admins on this page
+        if (parsed?.Role?.toLowerCase() !== 'admin') {
+          localStorage.removeItem('carbure_admin_user');
         } else {
           setUser(parsed);
         }
       } catch (e) {
-        localStorage.removeItem('carbure_user');
+        localStorage.removeItem('carbure_admin_user');
       }
     }
     setLoading(false);
@@ -28,17 +28,17 @@ export default function UserPortal() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    localStorage.setItem('carbure_user', JSON.stringify(userData));
+    localStorage.setItem('carbure_admin_user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('carbure_user');
+    localStorage.removeItem('carbure_admin_user');
   };
 
   const handleUpdateUser = (updatedUser) => {
     setUser(updatedUser);
-    localStorage.setItem('carbure_user', JSON.stringify(updatedUser));
+    localStorage.setItem('carbure_admin_user', JSON.stringify(updatedUser));
   };
 
   if (loading) {
@@ -50,7 +50,7 @@ export default function UserPortal() {
   }
 
   if (!user) {
-    return <UserLogin onLogin={handleLogin} />;
+    return <AdminLogin onLogin={handleLogin} />;
   }
 
   return <Dashboard currentUser={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} />;
